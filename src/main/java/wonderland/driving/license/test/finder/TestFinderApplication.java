@@ -1,7 +1,5 @@
 package wonderland.driving.license.test.finder;
 
-import javazoom.jl.decoder.JavaLayerException;
-import javazoom.jl.player.Player;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -145,8 +143,7 @@ public class TestFinderApplication {
                 .doOnNext(exam -> {
                     if (exam.date().isAfter(LocalDate.parse("2022-03-01"))
                     && exam.date().isBefore(LocalDate.parse("2022-06-30"))){
-                        playSound();
-                        var message = "new suitable exam found on " + exam.summary();
+                        var message = "!!!!!!!!!!!!!!!!!!!!!!!!\n new suitable exam found on " + exam.summary();
                         notifyUsingTelegramBot(message);
                     }
                 })
@@ -168,27 +165,6 @@ public class TestFinderApplication {
                 .bodyToMono(String.class)
                 .doOnError(e -> LOGGER.error("error while sending telegram message", e))
                 .subscribe();
-    }
-
-    void playSound() {
-        try {
-            File f = new ClassPathResource("granted.mp3").getFile();
-            FileInputStream fileInputStream = new FileInputStream(f);
-            BufferedInputStream bufferedInputStream = new BufferedInputStream(fileInputStream);
-            Player jlPlayer = new Player(bufferedInputStream);
-            new Thread(() -> {
-                try {
-                    jlPlayer.play();
-                } catch (Exception e) {
-                    System.out.println(e.getMessage());
-                }
-            }).start();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }catch (JavaLayerException e) {
-            e.printStackTrace();
-        }
     }
 
     private Mono<AvailableExamsResponse> loadExams() {
