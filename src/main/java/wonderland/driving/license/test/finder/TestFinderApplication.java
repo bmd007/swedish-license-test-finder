@@ -114,8 +114,11 @@ public class TestFinderApplication {
                 .codecs(codec -> codec.defaultCodecs().maxInMemorySize(2024 * 2024))
                 .build();
 
+       String telegramBotToken = Optional.ofNullable(environment.getProperty("telegram_bot_token"))
+                .orElseThrow();
+       String telegramBaseUrl = "https://api.telegram.org/%s/".formatted(telegramBotToken);
         telegramBotClient = notLoadBalancedWebClientBuilder
-                .baseUrl("https://api.telegram.org/bot5291539544:AAHTAjCZaLYZG4Oc3jMr_Ct5xQnKY77W5xE")
+                .baseUrl(telegramBaseUrl)
                 .codecs(codec -> codec.defaultCodecs().maxInMemorySize(2024 * 2024))
                 .build();
 
@@ -148,7 +151,8 @@ public class TestFinderApplication {
                         notifyUsingTelegramBot(message);
                     }
                 })
-                .doOnNext(exam -> notifyUsingTelegramBot(exam.summary()));
+                .doOnNext(exam -> notifyUsingTelegramBot(exam.summary()))
+                .doOnError(e -> LOGGER.error("error while sorting exams", e));
     }
 
     private void notifyUsingTelegramBot(String text) {
@@ -189,8 +193,7 @@ public class TestFinderApplication {
     }
 
     private Mono<AvailableExamsResponse> loadExams() {
-        String personNumber = Optional.ofNullable(environment.getProperty("ssn"))
-                .orElseThrow();
+        String personNumber = Optional.ofNullable(environment.getProperty("ssn")).orElseThrow();
         String requestBody = Find_MANUAL_PRACRICAL_Exams_Request_Body.formatted(personNumber);
         return testFinder.post()
                 .uri("/Boka/occasion-bundles")
@@ -202,7 +205,9 @@ public class TestFinderApplication {
                 .header("User-Agent","Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.80 Safari/537.36")
                 .accept(MediaType.APPLICATION_JSON)
                 .retrieve()
-                .bodyToMono(AvailableExamsResponse.class);
+                .bodyToMono(AvailableExamsResponse.class)
+                .doOnNext(System.out::println)
+                .doOnError(e -> LOGGER.error("error while loading exams", e));
     }
 }
 
