@@ -114,8 +114,7 @@ public class TestFinderApplication {
                 .codecs(codec -> codec.defaultCodecs().maxInMemorySize(2024 * 2024))
                 .build();
 
-       String telegramBotToken = Optional.ofNullable(environment.getProperty("telegram_bot_token"))
-                .orElseThrow();
+       String telegramBotToken = Optional.ofNullable(environment.getProperty("telegram_bot_token")).orElseThrow();
        String telegramBaseUrl = "https://api.telegram.org/%s/".formatted(telegramBotToken);
         telegramBotClient = notLoadBalancedWebClientBuilder
                 .baseUrl(telegramBaseUrl)
