@@ -63,7 +63,7 @@ public class TestFinderApplication {
             }
             """;
 
-    public static final String Find_MANUAL_PRACRICAL_Exams_Request_Body = """
+    public static final String FIND_MANUAL_PRACTICAL_EXAMS_REQUEST_BODY = """
                 {
                   "bookingSession": {
                     "socialSecurityNumber": "%s",
@@ -96,11 +96,7 @@ public class TestFinderApplication {
     private Environment environment;
 
     @EventListener(ApplicationReadyEvent.class)
-    public void start() throws UnknownHostException {
-        InetAddress inetAddress = InetAddress.getLocalHost();
-        LOGGER.info("IP Address:- " + inetAddress.getHostAddress());
-        LOGGER.info("Host Name:- " + inetAddress.getHostName());
-
+    public void start() {
         testFinder = notLoadBalancedWebClientBuilder
                 .baseUrl("https://fp.trafikverket.se")
                 .codecs(codec -> codec.defaultCodecs().maxInMemorySize(2024 * 2024))
@@ -169,7 +165,7 @@ public class TestFinderApplication {
 
     private Mono<AvailableExamsResponse> loadExams() {
         String personNumber = Optional.ofNullable(environment.getProperty("ssn")).orElseThrow();
-        String requestBody = Find_MANUAL_PRACRICAL_Exams_Request_Body.formatted(personNumber);
+        String requestBody = FIND_MANUAL_PRACTICAL_EXAMS_REQUEST_BODY.formatted(personNumber);
         return testFinder.post()
                 .uri("/Boka/occasion-bundles")
                 .contentType(MediaType.APPLICATION_JSON)
