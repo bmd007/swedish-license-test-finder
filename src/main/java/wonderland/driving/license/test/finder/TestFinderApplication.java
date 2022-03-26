@@ -141,13 +141,13 @@ public class TestFinderApplication {
                     }
                 })
                 .doOnNext(exam -> LOGGER.info(exam.summary()))
-                .doOnNext(exam -> notifyUsingTelegramBot(exam.summary()))
+//                .doOnNext(exam -> notifyUsingTelegramBot(exam.summary()))
                 .doOnError(e -> LOGGER.error("error while sorting exams", e));
     }
 
     private void notifyUsingTelegramBot(String text) {
         String chatId = Optional.ofNullable(environment.getProperty("chat_id"))
-                .orElseGet(() -> "41846159");//41846159 72624148
+                .orElseGet(() -> "72624148");//41846159 72624148
         telegramBotClient.post()
                 .uri("/sendMessage")
                 .contentType(MediaType.APPLICATION_JSON)
