@@ -14,7 +14,6 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.time.Duration;
@@ -94,7 +93,7 @@ public class TestFinderApplication {
             """;
 
     @Autowired
-    Environment environment;
+    private Environment environment;
 
     @EventListener(ApplicationReadyEvent.class)
     public void start() throws UnknownHostException {
@@ -114,20 +113,23 @@ public class TestFinderApplication {
                 .codecs(codec -> codec.defaultCodecs().maxInMemorySize(2024 * 2024))
                 .build();
 
-        notifyIfFoundExamOnFeb16th()
+        notifyIfFoundExam()
                 .map(Occasion::summary)
-                .subscribe(System.out::println);
+                .subscribe();
 
 
         Flux.interval(Duration.ofMinutes(30))
-                .flatMapSequential(ignore -> notifyIfFoundExamOnFeb16th())
+                .flatMapSequential(ignore -> notifyIfFoundExam())
                 .map(Occasion::summary)
-                .subscribe(System.out::println);
+                .subscribe();
     }
 
-    private Flux<Occasion> notifyIfFoundExamOnFeb16th() {
+    private Flux<Occasion> notifyIfFoundExam() {
+        String timeWindowStart = Optional.ofNullable(environment.getProperty("time_window_start"))
+                .orElseGet(() -> "2022-04-01");
+        String timeWindowEnd = Optional.ofNullable(environment.getProperty("time_window_end"))
+                .orElseGet(() -> "2022-06-30");
         return loadExams()
-                .doOnNext(ignore -> System.out.println("--------------"))
                 .filter(AvailableExamsResponse::isOk)
                 .map(AvailableExamsResponse::data)
                 .flatMapIterable(Data::bundles)
@@ -136,26 +138,29 @@ public class TestFinderApplication {
                 .filter(exam -> exam.date().isAfter(LocalDate.now()))
                 .filter(exam -> exam.date().isBefore(LocalDate.now().plusMonths(6)))
                 .doOnNext(exam -> {
-                    if (exam.date().isAfter(LocalDate.parse("2022-03-01"))
-                    && exam.date().isBefore(LocalDate.parse("2022-06-30"))){
-                        var message = "!!!!!!!!!!!!!!!!!!!!!!!!\n new suitable exam found on " + exam.summary();
+                    if (exam.date().isAfter(LocalDate.parse(timeWindowStart))
+                            && exam.date().isBefore(LocalDate.parse(timeWindowEnd))) {
+                        var message = "!!!!!!!!!!!!!!!!!!!!!!!!\n-------\n new suitable exam found on " + exam.summary();
                         notifyUsingTelegramBot(message);
                     }
                 })
+                .doOnNext(exam -> LOGGER.info(exam.summary()))
                 .doOnNext(exam -> notifyUsingTelegramBot(exam.summary()))
                 .doOnError(e -> LOGGER.error("error while sorting exams", e));
     }
 
     private void notifyUsingTelegramBot(String text) {
+        String chatId = Optional.ofNullable(environment.getProperty("chat_id"))
+                .orElseGet(() -> "41846159");//41846159 72624148
         telegramBotClient.post()
                 .uri("/sendMessage")
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue("""
                         {
-                          "chat_id": "72624148",
+                          "chat_id": %s,
                           "text": "%s"
                         }
-                        """.formatted(text))
+                        """.formatted(chatId, text))
                 .retrieve()
                 .bodyToMono(String.class)
                 .doOnError(e -> LOGGER.error("error while sending telegram message", e))
@@ -176,7 +181,7 @@ public class TestFinderApplication {
                 .accept(MediaType.APPLICATION_JSON)
                 .retrieve()
                 .bodyToMono(AvailableExamsResponse.class)
-                .doOnNext(System.out::println)
+//                .doOnNext(System.out::println)
                 .doOnError(e -> LOGGER.error("error while loading exams", e));
     }
 }

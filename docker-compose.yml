@@ -1,0 +1,12 @@
+version: '3.7'
+
+services:
+  swedish-driving-license-test-finder:
+    hostname: swedish-driving-license-test-finder
+    ports:
+      - 9528:9528
+      - 9529:9529
+    image: bmd007/license-test-finder:latest
+    environment:
+
+
