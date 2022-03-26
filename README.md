@@ -2,6 +2,9 @@
 swedish-driving-license-test-finder
 
 
-build: ./gradlew bootJar
+build: ./gradlew bootBuildImage (to get the latest version based on the code)
 
-run: java -jar -Dssn=[person number] -Dtelegram_bot_token=[token for your telegram bot]  ./build/libs/license-test-finder-beta.jar
+run: docker-compose up
+
+### Please note that this is tool and code base is created as fun and hobby.
+#### Any usage and possible consequences is your responsibility. 
