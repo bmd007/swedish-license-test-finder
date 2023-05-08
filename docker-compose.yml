@@ -8,8 +8,8 @@ services:
       - "9529:9529"
     image: bmd007/license-test-finder
     environment:
-      ssn: "198509204668"
+      ssn: "-"
       telegram_bot_token: "bot5291539544:AAHTAjCZaLYZG4Oc3jMr_Ct5xQnKY77W5xE"
-      chat_id: "41846159"
+      chat_id: "407218480"
       time_window_start: "2023-05-20"  #YYYY-MM-DD
       time_window_end: "2023-06-01"  #YYYY-MM-DD
