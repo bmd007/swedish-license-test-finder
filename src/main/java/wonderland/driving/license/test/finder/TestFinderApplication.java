@@ -207,7 +207,7 @@ public class TestFinderApplication {
                 .accept(MediaType.APPLICATION_JSON)
                 .retrieve()
                 .bodyToMono(AvailableExamsResponse.class)
-                .doOnNext(System.out::println)
+//                .doOnNext(System.out::println)
                 .doOnError(e -> LOGGER.error("error while loading exams", e));
     }
 }
