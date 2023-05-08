@@ -63,6 +63,35 @@ public class TestFinderApplication {
             }
             """;
 
+    public static final String Find_PERSIAN_Theory_Exams_IN_UPPSALA_Request_Body = """
+              {
+              "bookingSession": {
+                "socialSecurityNumber": "%s",
+                "licenceId": 5,
+                "bookingModeId": 0,
+                "ignoreDebt": false,
+                "ignoreBookingHindrance": false,
+                "examinationTypeId": 0,
+                "excludeExaminationCategories": [],
+                "rescheduleTypeId": 0,
+                "paymentIsActive": false,
+                "paymentReference": null,
+                "paymentUrl": null,
+                "searchedMonths": 0
+              },
+              "occasionBundleQuery": {
+                "startDate": "1970-01-01T00:00:00.000Z",
+                "searchedMonths": 0,
+                "locationId": 1000071,
+                "nearbyLocationIds": [1000071],
+                "languageId": 7,
+                "tachographTypeId": 1,
+                "occasionChoiceId": 1,
+                "examinationTypeId": 3
+              }
+            }
+            """;
+
     public static final String FIND_MANUAL_PRACTICAL_EXAMS_REQUEST_BODY = """
                 {
                   "bookingSession": {
@@ -177,7 +206,7 @@ public class TestFinderApplication {
                 .accept(MediaType.APPLICATION_JSON)
                 .retrieve()
                 .bodyToMono(AvailableExamsResponse.class)
-//                .doOnNext(System.out::println)
+                .doOnNext(System.out::println)
                 .doOnError(e -> LOGGER.error("error while loading exams", e));
     }
 }

@@ -9,6 +9,6 @@ POST https://api.telegram.org/bot5291539544:AAHTAjCZaLYZG4Oc3jMr_Ct5xQnKY77W5xE/
 Content-Type: application/json
 
 {
-  "chat_id": "72624148",
+  "chat_id": "407218480",
   "text": "Hello there"
 }
