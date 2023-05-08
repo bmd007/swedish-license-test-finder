@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
@@ -131,7 +132,7 @@ public class TestFinderApplication {
                 .codecs(codec -> codec.defaultCodecs().maxInMemorySize(2024 * 2024))
                 .build();
 
-       String telegramBotToken = Optional.ofNullable(environment.getProperty("telegram_bot_token")).orElseThrow();
+       String telegramBotToken = Optional.ofNullable(environment.getProperty("telegram_bot_token")).orElse("WRONG");
        String telegramBaseUrl = "https://api.telegram.org/%s".formatted(telegramBotToken);
         telegramBotClient = notLoadBalancedWebClientBuilder
                 .baseUrl(telegramBaseUrl)
@@ -193,8 +194,8 @@ public class TestFinderApplication {
     }
 
     private Mono<AvailableExamsResponse> loadExams() {
-        String personNumber = Optional.ofNullable(environment.getProperty("ssn")).orElseThrow();
-        String requestBody = FIND_MANUAL_PRACTICAL_EXAMS_REQUEST_BODY.formatted(personNumber);
+        String personNumber = Optional.ofNullable(environment.getProperty("ssn")).orElse("WRONG");
+        String requestBody = Find_PERSIAN_Theory_Exams_IN_UPPSALA_Request_Body.formatted(personNumber);
         return testFinder.post()
                 .uri("/Boka/occasion-bundles")
                 .contentType(MediaType.APPLICATION_JSON)
