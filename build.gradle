@@ -3,11 +3,6 @@ plugins {
     id "io.spring.dependency-management" version "1.1.0"
     id 'java'
     id 'idea'
-    id "jacoco" //code coverage
-}
-
-jacoco {
-    toolVersion = "0.8.10"
 }
 
 group = 'wonderlan'
@@ -22,10 +17,7 @@ ext.buildNumber = {
 
 project.version = buildNumber()
 
-sourceCompatibility = 17
-
 repositories {
-    mavenLocal()
     mavenCentral()
 }
 
@@ -61,12 +53,6 @@ dependencyManagement {
 test {
     useJUnitPlatform {}
 }
-jacocoTestReport {
-    reports {
-        xml.required = false
-        html.required = true
-    }
-}
 
 tasks.named('wrapper') {
     distributionType = Wrapper.DistributionType.ALL
@@ -75,5 +61,5 @@ tasks.named('wrapper') {
 bootBuildImage {
 //	imageName = "bmd007/${project.name}:${project.version}"
     imageName = "bmd007/${project.name}"
-    environment = ["BP_JVM_VERSION": "17"]
+//    environment = ["BP_JVM_VERSION": "17"]
 }
