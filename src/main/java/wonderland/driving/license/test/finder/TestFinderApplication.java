@@ -195,7 +195,7 @@ public class TestFinderApplication {
 
     private Mono<AvailableExamsResponse> loadExams() {
         String personNumber = Optional.ofNullable(environment.getProperty("ssn")).orElse("WRONG");
-        String requestBody = Find_PERSIAN_Theory_Exams_IN_UPPSALA_Request_Body.formatted(personNumber);
+        String requestBody = FIND_MANUAL_PRACTICAL_EXAMS_REQUEST_BODY.formatted(personNumber);
         return testFinder.post()
                 .uri("/Boka/occasion-bundles")
                 .contentType(MediaType.APPLICATION_JSON)
