@@ -1,5 +1,5 @@
 plugins {
-    id 'org.springframework.boot' version '3.3.5'
+    id 'org.springframework.boot' version '3.4.0'
     id "io.spring.dependency-management" version "1.1.6"
     id 'java'
     id 'idea'
@@ -32,8 +32,8 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
     implementation 'com.jayway.jsonpath:json-path'
-    implementation 'org.projectlombok:lombok:1.18.34'
-    annotationProcessor 'org.projectlombok:lombok:1.18.34'
+    implementation 'org.projectlombok:lombok:1.18.36'
+    annotationProcessor 'org.projectlombok:lombok:1.18.36'
 
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
